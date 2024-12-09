@@ -34,7 +34,7 @@
             --button-hover: #48484a;
             --button-active: #8EBCF8;
             --preview-text: #ffffff;
-            --active-text: #000000;
+            --active-text: #ffffff;
         }
 
         /* 移除旧的字体声明 */
@@ -114,7 +114,7 @@
             color: var(--preview-text);
             white-space: pre-wrap;
             text-align: center;
-            font-family: var(--mono-font);
+            font-family: "Ola Sans Compact";
         }
 
         .control-group {
@@ -141,16 +141,11 @@
             padding: 6px 12px;
             background: var(--button-bg);
             border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-size: 13px;
-            min-width: 44px;
-            text-align: center;
             border: none;
-            box-sizing: border-box;
-            font-family: var(--mono-font);
             color: var(--text-color);
-            transform: scale(1);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
             will-change: transform;
         }
 
@@ -166,7 +161,6 @@
             background: var(--button-active);
             color: var(--active-text);
             border: none;
-            transform: scale(1);
         }
 
         h2 {
@@ -291,7 +285,7 @@ abcdefghijklmnopqrstuvwxyz
         <div class="controls">
             <button class="toggle-controls" aria-label="Toggle Controls Panel">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
                 </svg>
             </button>
             <div class="controls-inner">
@@ -321,12 +315,12 @@ abcdefghijklmnopqrstuvwxyz
                 <div class="control-group">
                     <label>Weight</label>
                     <div class="button-group">
-                        <button class="weight-btn" data-weight="300">300</button>
-                        <button class="weight-btn active" data-weight="400">400</button>
-                        <button class="weight-btn" data-weight="500">500</button>
-                        <button class="weight-btn" data-weight="600">600</button>
-                        <button class="weight-btn" data-weight="700">700</button>
-                        <button class="weight-btn" data-weight="800">800</button>
+                        <button class="weight-btn" data-weight="300">Thin</button>
+                        <button class="weight-btn active" data-weight="400">Light</button>
+                        <button class="weight-btn" data-weight="500">Regular</button>
+                        <button class="weight-btn" data-weight="600">Medium</button>
+                        <button class="weight-btn" data-weight="700">Bold</button>
+                        <button class="weight-btn" data-weight="800">Heavy</button>
                     </div>
                 </div>
             </div>
@@ -385,11 +379,23 @@ abcdefghijklmnopqrstuvwxyz
             document.addEventListener('DOMContentLoaded', () => {
                 // 初始化
                 initializeFonts();
-                updatePreview();
 
                 // 应用保存的主题
                 const savedTheme = localStorage.getItem('theme') || 'light';
+                document.querySelector(`[data-theme="${savedTheme}"]`).classList.add('active');
+                document.querySelector(`[data-theme="${savedTheme === 'dark' ? 'light' : 'dark'}"]`).classList.remove('active');
                 toggleTheme(savedTheme);
+
+                // 主题切换按钮
+                document.querySelector('.theme-switch').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('theme-btn')) {
+                        const buttons = document.querySelectorAll('.theme-btn');
+                        buttons.forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        const newTheme = e.target.dataset.theme;
+                        toggleTheme(newTheme);
+                    }
+                });
 
                 // 字体选择按钮
                 document.querySelectorAll('.font-button').forEach(btn => {
@@ -429,13 +435,6 @@ abcdefghijklmnopqrstuvwxyz
                             parseInt(btn.dataset.weight)
                         );
                     });
-                });
-
-                // 主题切换按钮
-                document.querySelector('.theme-switch').addEventListener('click', () => {
-                    const currentTheme = document.documentElement.getAttribute('data-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    toggleTheme(newTheme);
                 });
 
                 // 控制面板展开/收起按钮
